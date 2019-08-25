@@ -42,4 +42,4 @@ function _validateIds(rawIds: string[]): number[] {
         });
 }
 
-export { advice, _validateIds as validateIds };
+export { advice, _validateIds };
