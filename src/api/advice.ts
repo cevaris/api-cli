@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 interface ApiResponse { }
 
@@ -31,7 +31,22 @@ async function getRandom(): Promise<Advice[]> {
 }
 
 async function getIds(ids: number[]): Promise<Advice[]> {
-    return Array(demo);
+    const promises: Promise<AxiosResponse<Slip>>[] =
+        ids.map(id => axios.get<Slip>(ADVICE_API_BY_ID(id)));
+
+    const responses: AxiosResponse<Slip>[] = await axios.all(promises);
+    const result: Slip[] = responses.map(r => r.data);
+    const resultMap: Map<number, Advice> = new Map();
+    ids.forEach((slipId, idx) => {
+        const slip = result[idx];
+        if (slip && slip.slip) {
+            slip.slip.slip_id = slipId.toString();
+            resultMap.set(slipId, slip.slip);
+        } else {
+            console.error(`An issue occurred fetching Advice(${slipId}): ${JSON.stringify(slip)}`);
+        }
+    });
+    return Array.from(resultMap.values());
 }
 
 async function getQuery(query: string): Promise<Advice[]> {

@@ -32,7 +32,7 @@ async function adviceAsync(ids: string[], query: string): Promise<void> {
 
 function advice(ids: string[], query: string): void {
     adviceAsync(ids, query)
-        .catch((err: Error) => console.error(err.message));
+        .catch((err: Error) => console.error(err));
 }
 
 function _validateIds(rawIds: string[]): number[] {
