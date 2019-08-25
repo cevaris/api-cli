@@ -1,4 +1,4 @@
-import { getIds, getQuery, getRandom, Slip } from '../api/advice';
+import { getIds, getQuery, getRandom, Advice } from '../api/advice';
 
 
 async function adviceAsync(ids: string[], query: string): Promise<void> {
@@ -6,7 +6,7 @@ async function adviceAsync(ids: string[], query: string): Promise<void> {
         throw Error('invalid request, pass in either query or ids');
     }
 
-    let promise: Promise<Slip[]>;
+    let promise: Promise<Advice[]>;
     if (ids) {
         const validIds = _validateIds(ids);
         promise = getIds(validIds);
@@ -17,8 +17,13 @@ async function adviceAsync(ids: string[], query: string): Promise<void> {
     }
 
     try {
-        const response: Slip[] = await promise;
-        console.log(`Response: ${response.map(s => s.slip.advice)}`);
+        const advice: Advice[] = await promise;
+        const sortedAdvice = advice.sort((l, r) => Number(l.slip_id) - Number(r.slip_id));
+        sortedAdvice.forEach(
+            (a: Advice) => {
+                console.log(`Advice(${String(a.slip_id).padStart(3, '0')}): ${a.advice}`)
+            }
+        );
         return Promise.resolve();
     } catch (err) {
         return Promise.reject(err);
