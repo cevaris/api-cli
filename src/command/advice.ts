@@ -1,4 +1,30 @@
-function validateIds(rawIds: string[]): number[] {
+import { getIds, getQuery, getRandom } from '../api/advice';
+
+async function advice(ids: string[], query: string): void {
+    if ((ids.length > 0) && query) {
+        throw Error('invalid request, use either query or ids');
+    }
+
+    const validIds = _validateIds(ids);
+
+    let promise;
+    if (validIds.length > 0) {
+        promise = getIds(validIds);
+    } else if (query) {
+        promise = getQuery(query);
+    } else {
+        promise = getRandom();
+    }
+
+    try {
+        const response = await promise;
+        console.log(`Response: ${response}`);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+function _validateIds(rawIds: string[]): number[] {
     return rawIds
         .map((id) => {
             const parsedNumber = Number(id);
@@ -10,9 +36,4 @@ function validateIds(rawIds: string[]): number[] {
         });
 }
 
-function advice(ids: string[], query: string): void {
-    const validIds = validateIds(ids);
-    console.log(`command advice: ids=${validIds} query=${query}`);
-}
-
-export { advice, validateIds };
+export { advice, _validateIds as validateIds };

@@ -1,13 +1,10 @@
 import * as program from 'commander';
-import { advice } from './command/advice';
+import { advice } from './src/command/advice';
 
 function parseCSV(value: string) {
     return value.split(',');
 }
 
-// https://api.adviceslip.com/advice
-// https://api.adviceslip.com/advice/{id}
-// https://api.adviceslip.com/advice/search/{query}
 program
     .command('advice')
     .description('prints advice form Advice API')
