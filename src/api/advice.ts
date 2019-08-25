@@ -11,17 +11,17 @@ interface Slip {
 const demo: Slip = { slip: { advice: 'test advice', slip_id: '3' } };
 
 // https://api.adviceslip.com/advice
-function getRandom(): Promise<Array<Slip>> {
+function getRandom(): Promise<Slip[]> {
     return Promise.resolve(Array(demo));
 }
 
 // https://api.adviceslip.com/advice/{id}
-function getIds(ids: number[]): Promise<Array<Slip>> {
+function getIds(ids: number[]): Promise<Slip[]> {
     return Promise.resolve(Array(demo));
 }
 
 // https://api.adviceslip.com/advice/search/{query}
-function getQuery(query: string): Promise<Array<Slip>> {
+function getQuery(query: string): Promise<Slip[]> {
     return Promise.resolve(Array(demo));
 }
 
