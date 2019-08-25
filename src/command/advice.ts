@@ -1,14 +1,10 @@
-import { getIds, getQuery, getRandom } from '../api/advice';
+import { getIds, getQuery, getRandom, Slip } from '../api/advice';
 
-async function advice(ids: string[], query: string): void {
-    if ((ids.length > 0) && query) {
-        throw Error('invalid request, use either query or ids');
-    }
 
-    const validIds = _validateIds(ids);
-
+async function adviceAsync(ids: string[], query: string): Promise<void> {
     let promise;
-    if (validIds.length > 0) {
+    if (ids) {
+        const validIds = _validateIds(ids);
         promise = getIds(validIds);
     } else if (query) {
         promise = getQuery(query);
@@ -17,11 +13,21 @@ async function advice(ids: string[], query: string): void {
     }
 
     try {
-        const response = await promise;
-        console.log(`Response: ${response}`);
+        const response: Slip[] = await promise;
+        console.log(`Response: ${response.map(s => s.slip.advice)}`);
+        return Promise.resolve();
     } catch (err) {
-        console.error(err);
+        return Promise.reject(err);
     }
+}
+
+function advice(ids: string[], query: string): void {
+    if (ids && query) {
+        throw Error('invalid request, use either query or ids');
+    }
+
+    adviceAsync(ids, query)
+        .catch((err) => console.error(err));
 }
 
 function _validateIds(rawIds: string[]): number[] {
