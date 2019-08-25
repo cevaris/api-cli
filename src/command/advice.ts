@@ -2,7 +2,7 @@ import { getIds, getQuery, getRandom, Slip } from '../api/advice';
 
 
 async function adviceAsync(ids: string[], query: string): Promise<void> {
-    let promise;
+    let promise: Promise<Array<Slip>>;
     if (ids) {
         const validIds = _validateIds(ids);
         promise = getIds(validIds);
@@ -13,7 +13,7 @@ async function adviceAsync(ids: string[], query: string): Promise<void> {
     }
 
     try {
-        const response: Slip[] = await promise;
+        const response: Array<Slip> = await promise;
         console.log(`Response: ${response.map(s => s.slip.advice)}`);
         return Promise.resolve();
     } catch (err) {
