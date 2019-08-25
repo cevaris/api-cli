@@ -1,4 +1,5 @@
 import * as program from 'commander';
+import { advice } from './command/advice';
 
 function parseCSV(value: string) {
     return value.split(',');
@@ -10,10 +11,8 @@ function parseCSV(value: string) {
 program
     .command('advice')
     .description('prints advice form Advice API')
-    .option('-i --ids <ids>', 'print advice with given ids (csv)', parseCSV)
-    .option('-s --search <query>', 'search for advice via query')
-    .action((p) => {
-        console.log('loading advice for', p.ids, p.search);
-    });
+    .option('-i --ids <ids>', 'fetch advice by ids', parseCSV)
+    .option('-q --query <query>', 'query for advice')
+    .action(p => advice(p.ids, p.query));
 
 program.parse(process.argv);

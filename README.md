@@ -15,14 +15,24 @@ echo "\nbin/" >> .gitignore
 yarn add axios commander
 yarn add --dev @types/jest @types/node jest ts-jest typescript
 
-# setup typescript
+# setup typescript config
 tsc --init
-# compile project on save
 tsc -w
+
+# setup jest config
+jest init
+jest --watchAll
 
 mkdir src
 touch src/index.ts
+
+mkdir src/api
+mkdir src/command
+mkdir tests/
+mkdir tests/api
+mkdir tests/command
 ```
+
 
 ### Advice API
 ```
@@ -30,4 +40,9 @@ node bin/index.js advice
 node bin/index.js advice --help
 node bin/index.js advice --ids 12,3,4
 node bin/index.js advice --search monkey
+```
+
+```
+# setup advice files
+touch tests/command/advice.ts
 ```
