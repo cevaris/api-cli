@@ -1,11 +1,12 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { EOL as NEW_LINE } from 'os';
+import { shuffle } from './helper';
 
 const execPromise = promisify(exec);
 
 describe('advice api', () => {
-    it('test advice api query command successful returns advice', async () => {
+    it('test query command successfully returns ordered advice', async () => {
         const response = await execPromise('node bin/index.js advice --query mother');
 
         const expected: string = [
@@ -16,7 +17,7 @@ describe('advice api', () => {
         expect(response.stdout).toEqual(expected);
     });
 
-    it('test advice api query command returns no advice for unknown search term', async () => {
+    it('test query command returns no advice for an unknown search term', async () => {
 
         const expected = [
             'Error: Failed to search for Advice containing aaa',
@@ -25,5 +26,18 @@ describe('advice api', () => {
 
         const response = await execPromise('node bin/index.js advice --query aaa');
         expect(response.stderr).toContain(expected);
+    });
+
+    it('test ids command successfully returns ordered advice', async () => {
+        const ids = shuffle([10, 30, 100]).join(',')
+        const response = await execPromise(`node bin/index.js advice --ids ${ids}`);
+
+        const expected: string = [
+            'Advice(010): Never pay full price for a sofa at DFS.',
+            'Advice(030): When in doubt, just take the next small step.',
+            'Advice(100): Everybody makes mistakes.'
+        ].join(NEW_LINE);
+
+        expect(response.stdout).toEqual(expected);
     });
 });

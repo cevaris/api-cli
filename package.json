@@ -16,7 +16,7 @@
     "typescript": "^3.5.3"
   },
   "scripts": {
-    "unit": "jest",
-    "integration": "jest --testRegex='integration\\.js$'"
+    "test": "jest",
+    "integration": "jest -c jest.config.integration.js"
   }
 }
