@@ -52,7 +52,7 @@ async function getQuery(query: string): Promise<Advice[]> {
     if (response.data.slips) {
         return response.data.slips;
     } else {
-        throw new Error(`Failed to search for Advice ${query} because ${JSON.stringify(response.data)}.`);
+        throw new Error(`Failed to search for Advice containing ${query}\n${JSON.stringify(response.data)}.`);
     }
 }
 
