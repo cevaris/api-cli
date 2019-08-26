@@ -13,8 +13,6 @@ interface Slips extends ApiResponse {
     slips: Advice[]
 }
 
-const demo: Advice = { advice: 'test advice', slip_id: '3' };
-
 const ADVICE_API_RANDOM = 'https://api.adviceslip.com/advice';
 const ADVICE_API_BY_ID =
     (id: number) => `https://api.adviceslip.com/advice/${id}`;
@@ -43,7 +41,7 @@ async function getIds(ids: number[]): Promise<Advice[]> {
             slip.slip.slip_id = slipId.toString();
             resultMap.set(slipId, slip.slip);
         } else {
-            console.error(`An issue occurred fetching Advice(${slipId}): ${JSON.stringify(slip)}`);
+            throw Error(`An issue occurred fetching Advice(${slipId}): ${JSON.stringify(slip)}`);
         }
     });
     return Array.from(resultMap.values());
