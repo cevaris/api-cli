@@ -31,18 +31,50 @@ mkdir src/command
 mkdir tests/
 mkdir tests/api
 mkdir tests/command
+
+mkdir build/
+
+mkdir bin/
+touch bin/advice
 ```
 
 
 ### Advice API
 ```
-node bin/index.js advice
-node bin/index.js advice --help
-node bin/index.js advice --ids 12,3,4
-node bin/index.js advice --search monkey
+~࿔ ./bin/advice --help
+Usage: index advice [options]
+
+prints advice form Advice API
+
+Options:
+  -i --ids <ids>      fetch advice by ids
+  -q --query <query>  query for advice
+  -h, --help          output usage information
 ```
 
+Random Advice
 ```
-# setup advice files
-touch tests/command/advice.ts
+~࿔ ./bin/advice
+Advice(201): Don't burn bridges.
 ```
+
+Ask for specific advice by id.
+```
+~࿔ ./bin/advice --ids 12,3,4
+Advice(003): Don't eat non-snow-coloured snow.
+Advice(004): Cars are bad investments.
+Advice(012): Always block trolls.
+```
+
+Ask for specific advice that includes the given text.
+```
+~࿔ ./bin/advice --query other
+Advice(011): Avoid mixing Ginger Nuts with other biscuits, they contaminate. Keep separated.
+Advice(017): Sometimes it's best to ignore other people's advice.
+Advice(031): Never let your Mother cut your hair.
+Advice(096): Don't give to others advice which you wouldn't follow.
+Advice(142): If you don't like the opinion you've been given, get another one.
+Advice(189): Do not compare yourself with others.
+Advice(208): Play is the true mother of invention.
+```
+
