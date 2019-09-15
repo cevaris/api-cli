@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, AxiosError } from 'axios';
 
 
 export interface WeatherResponse {
@@ -19,23 +19,29 @@ export interface WeatherResponse {
     sys: {
         sunrise: number  // unix epoch
         sunset: number   // unix epoch
+        country: string
     }
     timezone: number     // offset in seconds
     visibility: number   // meters
 }
 
 export async function getWeather(locations: string[], apiKey: string): Promise<WeatherResponse[]> {
-    const promises: Promise<AxiosResponse<WeatherResponse>>[] = locations.map(
-        location => {
+    const promises: Promise<void | AxiosResponse<WeatherResponse>>[] = locations.map(
+        async location => {
             const url = weatherLocationQuery(location, apiKey);
-            console.log(url);
             return axios.get<WeatherResponse>(url)
+                .catch((r: AxiosError) => console.error(`${location} not found`));
         }
     );
 
     const responses = await axios.all(promises);
-    console.log(responses);
-    const results: WeatherResponse[] = responses.map((r: AxiosResponse) => r.data);
+    const results: WeatherResponse[] = responses
+        .filter(x => x !== undefined)
+        .map((r: (void | AxiosResponse)) => {
+            if (r && r.data) {
+                return r.data;
+            }
+        });
     return results;
 }
 

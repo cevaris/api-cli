@@ -24,5 +24,5 @@ async function weatherAsync(locations: string[], apiKey: string): Promise<string
     const results = await getWeather(locations, apiKey);
     console.log(results);
 
-    return Promise.resolve(['10*', '100 *']);
+    return Promise.resolve(['']);
 }
