@@ -1,6 +1,6 @@
 import * as program from 'commander';
 import { advice } from './src/command/advice';
-import { geoEncode as weather } from './src/command/weather';
+import { weather } from './src/command/weather';
 
 function parseCSV(value: string) {
     return value.split(',');
@@ -21,6 +21,6 @@ program
     .command('weather')
     .description('prints weather of given location(s)')
     .option('-l --locations <locations>', 'list of locations', parseColonSV)
-    .action(p => weather(p.locations, p.box));
+    .action(p => weather(p.locations));
 
 program.parse(process.argv);
