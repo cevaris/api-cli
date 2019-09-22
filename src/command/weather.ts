@@ -1,6 +1,7 @@
 import { ApiKeys } from '../api-key';
 import { getWeather, WeatherResponse } from '../api/weather';
 const Table = require('cli-table');
+const moment = require('moment');
 
 export function weather(locations: string[]): void {
     try {
@@ -20,13 +21,12 @@ async function weatherAsync(locations: string[], apiKey: string): Promise<string
     }
 
     const results = await getWeather(locations, apiKey);
-    console.log(results);
     return buildTable(results)
 }
 
 function buildTable(results: WeatherResponse[]): string {
     const table = new Table({
-        head: ['Location', 'Current (°F)', 'Lat/Long (°)', 'Visibility (m)', 'Wind Speed (m/s)', 'Wind Angle (°)'],
+        head: ['Location', 'Date/Time', 'Current (°F)', 'Lat/Long (°)', 'Visibility (m)', 'Wind Speed (m/s)', 'Wind Angle (°)'],
         style: { compact: true },
     });
 
@@ -36,6 +36,7 @@ function buildTable(results: WeatherResponse[]): string {
         table.push(
             [
                 r.name,
+                formatTime(r.timezone),
                 currTemp,
                 `${r.coord.lat}/${r.coord.lon}`,
                 r.visibility,
@@ -45,8 +46,15 @@ function buildTable(results: WeatherResponse[]): string {
         );
     });
 
-
     return table.toString();
+}
+
+function formatTime(timezoneInSecs: number): string {
+    const timezoneInHours = timezoneInSecs / 3600;
+    return moment()
+        .utc()
+        .add(timezoneInHours, 'hours')
+        .format('ll, h:mm:ss a');
 }
 
 function kelvinToFahrenheit(value: number): number {

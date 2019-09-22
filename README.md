@@ -79,6 +79,14 @@ Advice(208): Play is the true mother of invention.
 ```
 
 ### Weather API
+Query for a Locations data. Separate multiple locations by ':' colon characters.
 ```
-TODO
+~࿔ ./bin/weather --locations 'A:Paris,France:Fresno,CA,USA'
+Location "A" not found
+┌──────────┬──────────────┬───────────────┬────────────────┬──────────────────┬────────────────┐
+│ Location │ Current (°F) │ Lat/Long (°)  │ Visibility (m) │ Wind Speed (m/s) │ Wind Angle (°) │
+├──────────┼──────────────┼───────────────┼────────────────┼──────────────────┼────────────────┤
+│ Paris    │ 61.47        │ 48.86/2.35    │ 10000          │ 3.6              │ 200            │
+│ Fresno   │ 62.64        │ 36.74/-119.78 │ 16093          │ 0.31             │ 25.259         │
+└──────────┴──────────────┴───────────────┴────────────────┴──────────────────┴────────────────┘
 ```
