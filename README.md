@@ -84,39 +84,41 @@ Advice(208): Play is the true mother of invention.
 ### Weather API
 Query for a Locations data. Separate multiple locations by ':' colon characters.
 ```
-~࿔ ./bin/weather --locations 'A:Paris,France:Fresno,CA,USA'
-Location "A" not found
-┌──────────┬─────────────────────────┬───────────┬───────────────┬──────────┬──────────────────┬────────────────┐
-│ Location │ Local Date/Time         │ Temp (°F) │ Lat/Long (°)  │ Vis. (m) │ Wind Speed (m/s) │ Wind Angle (°) │
-├──────────┼─────────────────────────┼───────────┼───────────────┼──────────┼──────────────────┼────────────────┤
-│ Paris    │ Sep 22, 2019/5:42:52 pm │ 61.48     │ 48.86/2.35    │ 10000    │ 3.6              │ 200            │
-├──────────┼─────────────────────────┼───────────┼───────────────┼──────────┼──────────────────┼────────────────┤
-│ Fresno   │ Sep 22, 2019/8:42:52 am │ 63.86     │ 36.74/-119.78 │ 16093    │ 0.31             │ 25.259         │
-└──────────┴─────────────────────────┴───────────┴───────────────┴──────────┴──────────────────┴────────────────┘
+~࿔ ./bin/weather --locations 'B:A:Paris,France:Fresno,CA,USA'
+Location "A" not found.
+Location "B" not found.
+┌───────────────┬─────────────────────────┬───────────┬───────────────┬──────────┬──────────────────┬────────────────┐
+│ Location      │ Local Date/Time         │ Temp (°F) │ Lat/Long (°)  │ Vis. (m) │ Wind Speed (m/s) │ Wind Angle (°) │
+├───────────────┼─────────────────────────┼───────────┼───────────────┼──────────┼──────────────────┼────────────────┤
+│ Fresno,CA,USA │ Sep 22, 2019/9:41:08 am │ 73.49     │ 36.74/-119.78 │ 14484    │ 1.77             │ 181.785        │
+├───────────────┼─────────────────────────┼───────────┼───────────────┼──────────┼──────────────────┼────────────────┤
+│ Paris,France  │ Sep 22, 2019/6:41:08 pm │ 62.01     │ 48.86/2.35    │ 10000    │ 5.1              │ 200            │
+└───────────────┴─────────────────────────┴───────────┴───────────────┴──────────┴──────────────────┴────────────────┘
 ```
 
 Print in JSON format
 ```
-~࿔ ./bin/weather --locations 'A:Paris,France:Fresno,CA,USA' --json | jq .
-Location "A" not found
+~࿔ ./bin/weather --locations 'B:A:Paris,France:Fresno,CA,USA' --json | jq .
+Location "A" not found.
+Location "B" not found.
 [
   {
-    "name": "Paris",
-    "local_datetime": "Sep 22, 2019/5:52:03 pm",
+    "name": "Fresno,CA,USA",
+    "local_datetime": "Sep 22, 2019/9:41:54 am",
+    "curr_temp": 72.52,
+    "lat_long": "36.74/-119.78",
+    "visibility": 16093,
+    "wind_speed": 1.77,
+    "wind_angle": 181.785
+  },
+  {
+    "name": "Paris,France",
+    "local_datetime": "Sep 22, 2019/6:41:54 pm",
     "curr_temp": 62.01,
     "lat_long": "48.86/2.35",
     "visibility": 10000,
-    "wind_speed": 4.6,
+    "wind_speed": 5.1,
     "wind_angle": 200
-  },
-  {
-    "name": "Fresno",
-    "local_datetime": "Sep 22, 2019/8:52:03 am",
-    "curr_temp": 65.64,
-    "lat_long": "36.74/-119.78",
-    "visibility": 16093,
-    "wind_speed": 0.31,
-    "wind_angle": 25.259
   }
 ]
 ```
