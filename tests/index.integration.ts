@@ -66,10 +66,11 @@ describe('weather api', () => {
     });
 
     it('test location not found error', async () => {
-        const response = await execPromise("./bin/weather --locations 'A:B' --json");
+        const response = await execPromise("./bin/weather --locations 'B:A:Z' --json");
         const expected: string = [
             'Location "A" not found.',
             'Location "B" not found.',
+            'Location "Z" not found.',
             '', // leaving this in for now
         ].join(NEW_LINE);
 
