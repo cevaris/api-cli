@@ -26,8 +26,7 @@ async function weatherAsync(locations: string[], apiKey: string): Promise<string
 
 function buildTable(results: WeatherResponse[]): string {
     const table = new Table({
-        head: ['Location', 'Date/Time', 'Current (°F)', 'Lat/Long (°)', 'Visibility (m)', 'Wind Speed (m/s)', 'Wind Angle (°)'],
-        style: { compact: true },
+        head: ['Location', 'Local Date/Time', 'Temp (°F)', 'Lat/Long (°)', 'Vis. (m)', 'Wind Speed (m/s)', 'Wind Angle (°)'],
     });
 
     results.forEach(r => {
@@ -54,7 +53,7 @@ function formatTime(timezoneInSecs: number): string {
     return moment()
         .utc()
         .add(timezoneInHours, 'hours')
-        .format('ll, h:mm:ss a');
+        .format('ll/h:mm:ss a');
 }
 
 function kelvinToFahrenheit(value: number): number {
