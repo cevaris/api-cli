@@ -21,6 +21,7 @@ program
     .command('weather')
     .description('prints weather of given location(s)')
     .option('-l --locations <locations>', 'list of locations', parseColonSV)
-    .action(p => weather(p.locations));
+    .option('-j --json', 'print results in json format')
+    .action(p => weather(p.locations, p.json));
 
 program.parse(process.argv);
