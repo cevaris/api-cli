@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
-import { promisify } from 'util';
 import { EOL as NEW_LINE } from 'os';
+import { promisify } from 'util';
 import { shuffle } from './helper';
 
 const execPromise = promisify(exec);

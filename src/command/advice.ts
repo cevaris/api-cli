@@ -8,7 +8,7 @@ async function adviceAsync(ids: string[], query: string): Promise<string[]> {
 
     let promise: Promise<Advice[]>;
     if (ids) {
-        const validIds = _validateIds(ids);
+        const validIds = validateIds(ids);
         promise = getIds(validIds);
     } else if (query) {
         promise = getQuery(query);
@@ -33,7 +33,7 @@ function advice(ids: string[], query: string): void {
         .catch((err: Error) => process.stderr.write(err.toString()));
 }
 
-function _validateIds(rawIds: string[]): number[] {
+function validateIds(rawIds: string[]): number[] {
     return rawIds
         .map((id) => {
             const parsedNumber = Number(id);
@@ -45,4 +45,4 @@ function _validateIds(rawIds: string[]): number[] {
         });
 }
 
-export { advice, _validateIds };
+export { advice };

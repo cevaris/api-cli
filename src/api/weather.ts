@@ -53,7 +53,7 @@ export async function getWeather(locations: string[], apiKey: string): Promise<A
     );
 
     const responses = await axios.all(promises);
-    return responses
+    return responses;
 }
 
 // http://api.openweathermap.org/data/2.5/weather?q=<LOCATION>&APPID=<API_KEY>

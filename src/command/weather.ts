@@ -1,7 +1,7 @@
-import { ApiKeys } from '../api-key';
-import { getWeather, WeatherResponse, ApiWeatherResponse } from '../api/weather';
-const Table = require('cli-table');
 import * as moment from 'moment';
+import { ApiKeys } from '../api-key';
+import { ApiWeatherResponse, getWeather } from '../api/weather';
+const Table = require('cli-table');
 
 export function weather(locations: string[], printJson: boolean): void {
     try {
