@@ -61,8 +61,8 @@ describe('weather api', () => {
             expect(obj[idx]['wind_angle']).toBeTruthy();
         });
 
-        expect(obj[0]['name']).toEqual('Paris');
-        expect(obj[1]['name']).toEqual('Fresno');
+        expect(obj[0]['name']).toEqual('Fresno,CA,USA');
+        expect(obj[1]['name']).toEqual('Paris,France');
     });
 
     it('test location not found error', async () => {
