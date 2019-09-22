@@ -1,8 +1,5 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
 
-interface WeatherApiResponse {
-}
-
 export interface WeatherResponse {
     coord: {
         lat: number
@@ -11,7 +8,6 @@ export interface WeatherResponse {
     name: string
     main: {
         temp: number     // kelvin
-        temp_min: number // kelvin
         temp_max: number // kelvin
     }
     wind: {
@@ -51,8 +47,3 @@ export async function getWeather(locations: string[], apiKey: string): Promise<W
 function weatherLocationQuery(location: string, apiKey: string): string {
     return `http://api.openweathermap.org/data/2.5/weather?q=${location}&APPID=${apiKey}`;
 }
-
-export function kelvinToFahrenheit(value: number): number {
-    return Number.parseFloat((value * 9 / 5 - 459.67).toFixed(2));
-}
-

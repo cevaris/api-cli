@@ -1,5 +1,5 @@
 import { ApiKeys } from '../api-key';
-import { getWeather, kelvinToFahrenheit, WeatherResponse } from '../api/weather';
+import { getWeather, WeatherResponse } from '../api/weather';
 const Table = require('cli-table');
 
 export function weather(locations: string[]): void {
@@ -26,20 +26,29 @@ async function weatherAsync(locations: string[], apiKey: string): Promise<string
 
 function buildTable(results: WeatherResponse[]): string {
     const table = new Table({
-        head: ['Location', 'Current', 'Min/Max'],
+        head: ['Location', 'Current (°F)', 'Lat/Long (°)', 'Visibility (m)', 'Wind Speed (m/s)', 'Wind Angle (°)'],
+        style: { compact: true },
     });
 
     results.forEach(r => {
         const currTemp = kelvinToFahrenheit(r.main.temp);
-        const maxTemp = kelvinToFahrenheit(r.main.temp_max);
-        const minTemp = kelvinToFahrenheit(r.main.temp_min);
-        // const msg = `${r.name} ${minTemp}/${currTemp}/${maxTemp}`;
 
         table.push(
-            [r.name, currTemp, `${minTemp}/${maxTemp}`]
+            [
+                r.name,
+                currTemp,
+                `${r.coord.lat}/${r.coord.lon}`,
+                r.visibility,
+                r.wind.speed,
+                r.wind.deg,
+            ]
         );
     });
 
 
     return table.toString();
+}
+
+function kelvinToFahrenheit(value: number): number {
+    return Number.parseFloat((value * 9 / 5 - 459.67).toFixed(2));
 }
