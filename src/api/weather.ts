@@ -1,5 +1,12 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
 
+export interface ApiWeatherResponse {
+    location: string
+    success: boolean
+    error?: AxiosError
+    result: WeatherResponse
+}
+
 export interface WeatherResponse {
     coord: {
         lat: number
@@ -23,24 +30,30 @@ export interface WeatherResponse {
     visibility: number   // meters
 }
 
-export async function getWeather(locations: string[], apiKey: string): Promise<WeatherResponse[]> {
-    const promises: Promise<void | AxiosResponse<WeatherResponse>>[] = locations.map(
+export async function getWeather(locations: string[], apiKey: string): Promise<ApiWeatherResponse[]> {
+    const promises = locations.map(
         async location => {
             const url = weatherLocationQuery(location, apiKey);
             return axios.get<WeatherResponse>(url)
-                .catch((r: AxiosError) => console.error(`Location "${location}" not found.`));
+                .then((r: AxiosResponse<WeatherResponse>) => {
+                    return <ApiWeatherResponse>{
+                        location: location,
+                        success: true,
+                        result: r.data,
+                    }
+                })
+                .catch((e: AxiosError) => {
+                    return <ApiWeatherResponse>{
+                        location: location,
+                        success: false,
+                        error: e
+                    }
+                })
         }
     );
 
     const responses = await axios.all(promises);
-    const results: WeatherResponse[] = responses
-        .filter(x => x !== undefined)
-        .map((r: (void | AxiosResponse)) => {
-            if (r && r.data) {
-                return r.data;
-            }
-        });
-    return results;
+    return responses
 }
 
 // http://api.openweathermap.org/data/2.5/weather?q=<LOCATION>&APPID=<API_KEY>

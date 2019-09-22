@@ -1,5 +1,5 @@
 import { ApiKeys } from '../api-key';
-import { getWeather, WeatherResponse } from '../api/weather';
+import { getWeather, WeatherResponse, ApiWeatherResponse } from '../api/weather';
 const Table = require('cli-table');
 const moment = require('moment');
 
@@ -21,21 +21,32 @@ async function weatherAsync(locations: string[], apiKey: string, printJson: bool
     }
 
     const results = await getWeather(locations, apiKey);
-    return printJson ? buildJson(results) : buildTable(results);
+
+    const sortedResults = results.sort((a, b) => (a.location > b.location) ? 1 : -1)
+
+    const success = sortedResults.filter(r => r.success === true)
+
+
+    const failure = sortedResults.filter(r => r.success === false);
+    failure.forEach(f => {
+        console.error(`Location "${f.location}" not found.`);
+    });
+
+    return printJson ? buildJson(success) : buildTable(success);
 }
 
-function buildJson(results: WeatherResponse[]): string {
+function buildJson(results: ApiWeatherResponse[]): string {
     const obj = results.map(r => {
-        const currTemp = kelvinToFahrenheit(r.main.temp);
+        const currTemp = kelvinToFahrenheit(r.result.main.temp);
 
         return {
-            "name": r.name,
-            "local_datetime": formatTime(r.timezone),
+            "name": r.location,
+            "local_datetime": formatTime(r.result.timezone),
             "curr_temp": currTemp,
-            "lat_long": `${r.coord.lat}/${r.coord.lon}`,
-            "visibility": r.visibility,
-            "wind_speed": r.wind.speed,
-            "wind_angle": r.wind.deg,
+            "lat_long": `${r.result.coord.lat}/${r.result.coord.lon}`,
+            "visibility": r.result.visibility,
+            "wind_speed": r.result.wind.speed,
+            "wind_angle": r.result.wind.deg,
         };
     });
 
@@ -47,7 +58,7 @@ function buildJson(results: WeatherResponse[]): string {
 
 }
 
-function buildTable(results: WeatherResponse[]): string {
+function buildTable(results: ApiWeatherResponse[]): string {
     const table = new Table({
         head: [
             'Location',
@@ -61,17 +72,17 @@ function buildTable(results: WeatherResponse[]): string {
     });
 
     results.forEach(r => {
-        const currTemp = kelvinToFahrenheit(r.main.temp);
+        const currTemp = kelvinToFahrenheit(r.result.main.temp);
 
         table.push(
             [
-                r.name,
-                formatTime(r.timezone),
+                r.location,
+                formatTime(r.result.timezone),
                 currTemp,
-                `${r.coord.lat}/${r.coord.lon}`,
-                r.visibility,
-                r.wind.speed,
-                r.wind.deg,
+                `${r.result.coord.lat}/${r.result.coord.lon}`,
+                r.result.visibility,
+                r.result.wind.speed,
+                r.result.wind.deg,
             ]
         );
     });
