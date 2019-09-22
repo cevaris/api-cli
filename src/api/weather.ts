@@ -28,7 +28,7 @@ export async function getWeather(locations: string[], apiKey: string): Promise<W
         async location => {
             const url = weatherLocationQuery(location, apiKey);
             return axios.get<WeatherResponse>(url)
-                .catch((r: AxiosError) => console.error(`Location "${location}" not found`));
+                .catch((r: AxiosError) => console.error(`Location "${location}" not found.`));
         }
     );
 

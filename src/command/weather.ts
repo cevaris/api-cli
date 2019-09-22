@@ -17,7 +17,7 @@ export function weather(locations: string[], printJson: boolean): void {
 
 async function weatherAsync(locations: string[], apiKey: string, printJson: boolean): Promise<string> {
     if (locations === undefined || locations.length === 0) {
-        throw Error('invalid request, no locations found');
+        throw Error('invalid request, no locations found.');
     }
 
     const results = await getWeather(locations, apiKey);
@@ -39,7 +39,12 @@ function buildJson(results: WeatherResponse[]): string {
         };
     });
 
-    return JSON.stringify(obj);
+    if (obj.length > 0) {
+        return JSON.stringify(obj);
+    } else {
+        return '';
+    }
+
 }
 
 function buildTable(results: WeatherResponse[]): string {

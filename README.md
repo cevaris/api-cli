@@ -23,6 +23,9 @@ tsc -w
 jest init
 jest --watchAll
 
+# run integration tests only
+jest -c jest.config.integration.js
+
 mkdir src
 touch src/index.ts
 

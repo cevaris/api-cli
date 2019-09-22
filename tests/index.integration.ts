@@ -41,3 +41,45 @@ describe('advice api', () => {
         expect(response.stdout).toEqual(expected);
     });
 });
+
+
+describe('weather api', () => {
+    it('test multiple weather locations successfully returns ordered data', async () => {
+        const response = await execPromise("./bin/weather --locations 'Paris,France:Fresno,CA,USA' --json");
+        const obj = JSON.parse(response.stdout);
+
+        expect(obj).toBeDefined();
+        expect(obj).toHaveLength(2);
+
+        [0, 1].forEach(idx => {
+            expect(obj[idx]).toBeDefined();
+            expect(obj[idx]['local_datetime']).toBeTruthy();
+            expect(obj[idx]['curr_temp']).toBeTruthy();
+            expect(obj[idx]['lat_long']).toBeTruthy();
+            expect(obj[idx]['visibility']).toBeTruthy();
+            expect(obj[idx]['wind_speed']).toBeTruthy();
+            expect(obj[idx]['wind_angle']).toBeTruthy();
+        });
+
+        expect(obj[0]['name']).toEqual('Paris');
+        expect(obj[1]['name']).toEqual('Fresno');
+    });
+
+    it('test location not found error', async () => {
+        const response = await execPromise("./bin/weather --locations 'A:B' --json");
+        const expected: string = [
+            'Location "A" not found.',
+            'Location "B" not found.',
+            '', // leaving this in for now
+        ].join(NEW_LINE);
+
+        expect(response.stderr).toEqual(expected);
+    });
+
+    it('test no location passed in', async () => {
+        const response = await execPromise("./bin/weather --json");
+        const expected: string = 'Error: invalid request, no locations found.';
+
+        expect(response.stderr).toEqual(expected);
+    });
+});
