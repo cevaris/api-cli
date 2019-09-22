@@ -1,7 +1,7 @@
 import { ApiKeys } from '../api-key';
 import { getWeather, WeatherResponse, ApiWeatherResponse } from '../api/weather';
 const Table = require('cli-table');
-const moment = require('moment');
+import * as moment from 'moment';
 
 export function weather(locations: string[], printJson: boolean): void {
     try {
@@ -38,10 +38,11 @@ async function weatherAsync(locations: string[], apiKey: string, printJson: bool
 function buildJson(results: ApiWeatherResponse[]): string {
     const obj = results.map(r => {
         const currTemp = kelvinToFahrenheit(r.result.main.temp);
+        const now = moment.utc();
 
         return {
             "name": r.location,
-            "local_datetime": formatTime(r.result.timezone),
+            "local_datetime": formatTime(now, r.result.timezone),
             "curr_temp": currTemp,
             "lat_long": `${r.result.coord.lat}/${r.result.coord.lon}`,
             "visibility": r.result.visibility,
@@ -73,11 +74,12 @@ function buildTable(results: ApiWeatherResponse[]): string {
 
     results.forEach(r => {
         const currTemp = kelvinToFahrenheit(r.result.main.temp);
+        const now = moment.utc()
 
         table.push(
             [
                 r.location,
-                formatTime(r.result.timezone),
+                formatTime(now, r.result.timezone),
                 currTemp,
                 `${r.result.coord.lat}/${r.result.coord.lon}`,
                 r.result.visibility,
@@ -90,10 +92,9 @@ function buildTable(results: ApiWeatherResponse[]): string {
     return table.toString();
 }
 
-function formatTime(timezoneInSecs: number): string {
+function formatTime(now: moment.Moment, timezoneInSecs: number): string {
     const timezoneInHours = timezoneInSecs / 3600;
-    return moment()
-        .utc()
+    return now
         .add(timezoneInHours, 'hours')
         .format('ll/h:mm:ss a');
 }
