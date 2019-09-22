@@ -7,7 +7,7 @@ const execPromise = promisify(exec);
 
 describe('advice api', () => {
     it('test query command successfully returns ordered advice', async () => {
-        const response = await execPromise('node bin/index.js advice --query mother');
+        const response = await execPromise('./bin/advice --query mother');
 
         const expected: string = [
             'Advice(031): Never let your Mother cut your hair.',
@@ -24,13 +24,13 @@ describe('advice api', () => {
             '{\"message\":{\"type\":\"notice\",\"text\":\"No advice slips found matching that search term.\"'
         ].join(NEW_LINE);
 
-        const response = await execPromise('node bin/index.js advice --query aaa');
+        const response = await execPromise('./bin/advice --query aaa');
         expect(response.stderr).toContain(expected);
     });
 
     it('test ids command successfully returns ordered advice', async () => {
         const ids = shuffle([10, 30, 100]).join(',')
-        const response = await execPromise(`node bin/index.js advice --ids ${ids}`);
+        const response = await execPromise(`./bin/advice --ids ${ids}`);
 
         const expected: string = [
             'Advice(010): Never pay full price for a sofa at DFS.',
