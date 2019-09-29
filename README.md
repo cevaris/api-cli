@@ -3,7 +3,7 @@ CLI wrapper around multiple HTTP API's
 
 ```
 # create 
-yarn init
+npm init
 
 # setup git
 git init 
@@ -12,8 +12,8 @@ git pull --rebase
 echo "\nbin/" >> .gitignore
 
 # install application libraries and developer tools
-yarn add axios commander
-yarn add --dev @types/jest @types/node jest ts-jest typescript
+npm install --save axios commander
+npm install --save-dev @types/jest @types/node jest ts-jest typescript
 
 # setup typescript config
 tsc --init
