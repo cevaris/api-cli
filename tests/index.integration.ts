@@ -6,6 +6,11 @@ import { shuffle } from './helper';
 const execPromise = promisify(exec);
 
 describe('advice api', () => {
+    it('test ids are not numbers', async () => {
+        const response = await execPromise('./bin/advice --ids a,b,c');
+        expect(response.stderr).toEqual('Error: a is not a number');
+    });
+
     it('test query command successfully returns ordered advice', async () => {
         const response = await execPromise('./bin/advice --query mother');
 
@@ -36,6 +41,19 @@ describe('advice api', () => {
             'Advice(010): Never pay full price for a sofa at DFS.',
             'Advice(030): When in doubt, just take the next small step.',
             'Advice(100): Everybody makes mistakes.'
+        ].join(NEW_LINE);
+
+        expect(response.stdout).toEqual(expected);
+    });
+
+    it('test ids command successfully returns with inline errors', async () => {
+        const ids = shuffle([1000, 2, 3]).join(',')
+        const response = await execPromise(`./bin/advice --ids ${ids}`);
+
+        const expected: string = [
+            "Advice(002): Smile and the world smiles with you. Frown and you're on your own.",
+            "Advice(003): Don't eat non-snow-coloured snow.",
+            'Advice(1000): Error: failed to hydrate 1000',
         ].join(NEW_LINE);
 
         expect(response.stdout).toEqual(expected);

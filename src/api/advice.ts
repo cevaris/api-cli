@@ -1,16 +1,23 @@
-import axios, { AxiosResponse } from 'axios';
-
-interface ApiResponse { }
+import axios, { AxiosResponse, AxiosError } from 'axios';
 
 interface Advice {
     advice: string
     slip_id: string
 }
-interface Slip extends ApiResponse {
+
+interface Slip {
     slip: Advice
 }
-interface Slips extends ApiResponse {
+
+interface Slips {
     slips: Advice[]
+}
+
+interface SlipResponse {
+    id: number
+    success: boolean
+    error?: Error
+    advice: Advice
 }
 
 const ADVICE_API_RANDOM = 'https://api.adviceslip.com/advice';
@@ -19,41 +26,72 @@ const ADVICE_API_BY_ID =
 const ADVICE_API_QUERY =
     (query: string) => `https://api.adviceslip.com/advice/search/${query}`;
 
-async function getRandom(): Promise<Advice[]> {
+async function getRandom(): Promise<SlipResponse[]> {
     const response = await axios.get<Slip>(ADVICE_API_RANDOM);
+
+    let slipResponse: SlipResponse;
+
     if (response.data) {
-        return Array(<Advice>response.data.slip);
+        slipResponse = <SlipResponse>{
+            id: parseInt(response.data.slip.slip_id),
+            success: true,
+            advice: response.data.slip
+        };
     } else {
-        throw new Error(`Failed to seek Advice because ${JSON.stringify(response.data)}.`);
+        slipResponse = <SlipResponse>{
+            success: false,
+            error: Error(`Failed to seek Advice because ${JSON.stringify(response.data)}.`),
+        };
     }
+
+    return Array(slipResponse);
 }
 
-async function getIds(ids: number[]): Promise<Advice[]> {
-    const promises: Promise<AxiosResponse<Slip>>[] =
-        ids.map(id => axios.get<Slip>(ADVICE_API_BY_ID(id)));
+async function getIds(ids: number[]): Promise<SlipResponse[]> {
+    const promises: Promise<SlipResponse>[] =
+        ids.map(async (id) => {
+            try {
+                const r = await axios.get<Slip>(ADVICE_API_BY_ID(id));
+                if (r.data && r.data.slip) {
+                    return <SlipResponse>{
+                        id: id,
+                        success: true,
+                        advice: r.data.slip
+                    };
+                }
+                else {
+                    return <SlipResponse>{
+                        id: id,
+                        success: false,
+                        error: new Error(`failed to hydrate ${id}`)
+                    };
+                }
+            } catch (e) {
+                return <SlipResponse>{
+                    id: id,
+                    success: false,
+                    error: e
+                };
+            }
+        });
 
-    const responses: AxiosResponse<Slip>[] = await axios.all(promises);
-    const result: Slip[] = responses.map(r => r.data);
-    const resultMap: Map<number, Advice> = new Map();
-    ids.forEach((slipId, idx) => {
-        const slip = result[idx];
-        if (slip && slip.slip) {
-            slip.slip.slip_id = slipId.toString();
-            resultMap.set(slipId, slip.slip);
-        } else {
-            throw Error(`An issue occurred fetching Advice(${slipId}): ${JSON.stringify(slip)}`);
-        }
-    });
-    return Array.from(resultMap.values());
+    const responses: SlipResponse[] = await axios.all(promises);
+    return responses;
 }
 
-async function getQuery(query: string): Promise<Advice[]> {
+async function getQuery(query: string): Promise<SlipResponse[]> {
     const response = await axios.get<Slips>(ADVICE_API_QUERY(query));
     if (response.data.slips) {
-        return response.data.slips;
+        return response.data.slips.map(s => {
+            return <SlipResponse>{
+                id: parseInt(s.slip_id),
+                success: true,
+                advice: s
+            }
+        })
     } else {
         throw new Error(`Failed to search for Advice containing ${query}\n${JSON.stringify(response.data)}.`);
     }
 }
 
-export { Advice, getRandom, getIds, getQuery, Slip };
+export { Advice, getRandom, getIds, getQuery, Slip, SlipResponse };
