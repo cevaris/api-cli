@@ -1,4 +1,4 @@
-# cli-api
+# API CLI
 CLI wrapper around multiple HTTP API's
 
 ```
@@ -7,7 +7,7 @@ yarn init
 
 # setup git
 git init 
-git remote add origin git@github.com:cevaris/cli-api.git
+git remote add origin git@github.com:cevaris/api-cli.git
 git pull --rebase
 echo "\nbin/" >> .gitignore
 
