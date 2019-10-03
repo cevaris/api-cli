@@ -122,3 +122,7 @@ Location "B" not found.
   }
 ]
 ```
+
+
+### Json Placeholder API
+- https://jsonplaceholder.typicode.com/guide.html
